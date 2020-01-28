@@ -174,9 +174,9 @@ namespace ofxZeroMQ {
 #pragma mark - copy value from target
 
         template <typename type>
-        std::size_t copyFrom(const type *v, std::size_t value_size, std::size_t offset = 0) {
+        std::size_t memCopyFrom(const type *v, std::size_t value_size, std::size_t offset = 0) {
             if(size() < offset + value_size) {
-                ofLogWarning("ofxZeroMQMessage::copyFrom") << "range out of bounds. given value_size = " << value_size << ", offset = " << offset << ". but size is " << size();
+                ofLogWarning("ofxZeroMQMessage::memCopyFrom") << "range out of bounds. given value_size = " << value_size << ", offset = " << offset << ". but size is " << size();
                 return 0ul;
             }
             std::memcpy((char *)data() + offset, v, value_size);
@@ -220,10 +220,10 @@ namespace ofxZeroMQ {
 #pragma mark - copy value from target
         
         template <typename type>
-        std::size_t copyTo(type *v, std::size_t value_size, std::size_t offset = 0) const
+        std::size_t memCopyTo(type *v, std::size_t value_size, std::size_t offset = 0) const
         {
             if(size() < offset + value_size) {
-                ofLogWarning("ofxZeroMQMessage::copyTo") << "range out of bounds. given value_size = " << value_size << ", offset = " << offset << ". but size is " << size();
+                ofLogWarning("ofxZeroMQMessage::memCopyTo") << "range out of bounds. given value_size = " << value_size << ", offset = " << offset << ". but size is " << size();
                 return 0ul;
             }
             std::memcpy(v, (char *)data() + offset, value_size);
@@ -350,9 +350,15 @@ namespace ofxZeroMQ {
                                           const zmq::message_t &data)
         {
             m.rebuild(data.size());
-            m.copyFrom(data.data(), data.size());
+            m.memCopyFrom(data.data(), data.size());
+        };
+        inline static void to_zmq_message(ofxZeroMQ::Message &m,
+                                          zmq::message_t &&data)
+        {
+            m = std::move(data);
         };
 
+        
         inline static void from_zmq_message(const ofxZeroMQ::Message &m,
                                             zmq::message_t &data)
         {
