@@ -98,7 +98,8 @@ namespace ofxZeroMQ {
         }
         operator int() const
         { return static_cast<int>(operator zmq::send_flags()); };
-    };
+    }; // SendFlag
+    
     static constexpr SendFlag SendFlagNone{false, false};
     static constexpr SendFlag SendFlagNonblocking{true, false};
     static constexpr SendFlag SendFlagMore{false, true};
@@ -116,7 +117,7 @@ namespace ofxZeroMQ {
         }
         operator int() const
         { return static_cast<int>(operator zmq::recv_flags()); };
-    };
+    }; // ReceiveFlag
     
     static constexpr ReceiveFlag ReceiveFlagNone{false};
     static constexpr ReceiveFlag ReceiveFlagNonblocking{true};
@@ -132,8 +133,8 @@ namespace ofxZeroMQ {
             decltype(std::get<sizeof...(args) - 1>(std::tuple<typename std::decay<args>::type ...>{})),
             ReceiveFlag
         >;
-    };
-};
+    }; // detail
+}; // ofxZeroMQ
 
 #pragma mark - adl converter foward decalaration
 
