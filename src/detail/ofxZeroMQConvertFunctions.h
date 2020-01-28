@@ -51,13 +51,7 @@ namespace ofxZeroMQ {
         inline static void from_zmq_message(const ofxZeroMQ::Message &m,
                                             ofRectangle &rect)
         {
-            std::memcpy(&rect.position, m.data(), 3 * sizeof(float));
-            std::memcpy(&rect.width,
-                        (char *)m.data() + 3 * sizeof(float),
-                        sizeof(float));
-            std::memcpy(&rect.height,
-                        (char *)m.data() + 4 * sizeof(float),
-                        sizeof(float));
+            m.setTo(rect.position.x, rect.position.y, rect.position.z, rect.width, rect.height);
         }
 
 #pragma mark ofPixels
@@ -71,9 +65,7 @@ namespace ofxZeroMQ {
             ofPixelFormat format = pix.getPixelFormat();
             
             m.rebuild(sizeof(uint32_t) * 2 + sizeof(ofPixelFormat) + sizeof(pix_type) * pix.size());
-            std::size_t offset = 0ul;
-            offset += m.copyFrom(size);
-            offset += m.copyFrom(format, offset);
+            auto offset = m.set(size, format);
             m.copyFrom(pix.getData(), sizeof(pix_type) * pix.size(), offset);
         }
 
@@ -83,15 +75,8 @@ namespace ofxZeroMQ {
         {
             std::uint32_t size[2];
             ofPixelFormat pixel_format;
-            std::memcpy((void *)size,
-                        m.data(),
-                        sizeof(std::uint32_t) * 2);
-            std::memcpy((void *)&pixel_format,
-                        (char *)m.data() + sizeof(std::uint32_t) * 2,
-                        sizeof(ofPixelFormat));
-            pix.setFromPixels((pix_type *)((char *)m.data()
-                                           + sizeof(std::uint32_t) * 2
-                                           + sizeof(ofPixelFormat)),
+            auto offset = m.setTo(size, pixel_format);
+            pix.setFromPixels((pix_type *)((char *)m.data() + offset),
                               size[0],
                               size[1],
                               pixel_format);
@@ -109,6 +94,5 @@ namespace ofxZeroMQ {
         { from_zmq_message(m, pix.getPixels()); };
     }; // detail
 }; // ofxZeroMQ
-#pragma mark 
 
 #endif /* ofxZeroMQConvertFunctions_h */
