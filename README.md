@@ -4,10 +4,16 @@ ofxZMQ alternavtive.
 
 ## Notice
 
-* currently, tested on
+* this addon is buggy phase now
+  * if you find a bug, please post issue.
+* tested on
   *  macOS 10.14.6 + Xcode11.2 + oF0.11.0 release
 
 ## API
+
+### ofxZeroMQMessage
+
+### ofxZeroMQMultipartMessage
 
 ### ofxZeroMQSubscriber
 
@@ -36,3 +42,17 @@ ofxZMQ alternavtive.
 
 * MIT
 
+## Author
+
+* ISHII 2bit [ISHII Tsuubito Program Office, HagukiWoKamuToRingoKaraTiGaDeru]
+* i[at]2bit.jp
+
+## At the last
+
+Please create a new issue if there is a problem.
+
+And please throw a pull request if you have a cool idea!!
+
+If you get happy with using this addon, and you're rich, please donation for support continuous development.
+
+Bitcoin: `17AbtW73aydfYH3epP8T3UDmmDCcXSGcaf`
