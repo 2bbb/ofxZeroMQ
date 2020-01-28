@@ -28,7 +28,7 @@
 
 #include "ofLog.h"
 
-#pragma mark meta functions
+#pragma mark - meta functions
 
 namespace ofxZeroMQ {
     template <typename T>
@@ -78,7 +78,7 @@ namespace ofxZeroMQ {
     struct disjunction<cond, conditions ...> : conditional_t<bool(cond::value), cond, disjunction<conditions ...>> {};
 };
 
-#pragma mark ZMQ Flags
+#pragma mark - ZMQ Flags
 
 namespace ofxZeroMQ {
     struct SendFlag {
@@ -135,14 +135,14 @@ namespace ofxZeroMQ {
     };
 };
 
-#pragma mark adl converter foward decalaration
+#pragma mark - adl converter foward decalaration
 
 namespace ofxZeroMQ {
     template <typename type = void, typename sfinae = void>
     struct adl_converter;
 };
 
-#pragma mark Message declaration
+#pragma mark - Message declaration
 
 namespace ofxZeroMQ {
     namespace detail {
@@ -171,6 +171,8 @@ namespace ofxZeroMQ {
         inline Message(type &&v)
         { from(std::forward<type>(v)); };
         
+#pragma mark - copy value from target
+
         template <typename type>
         std::size_t copyFrom(const type *v, std::size_t value_size, std::size_t offset = 0) {
             if(size() < offset + value_size) {
@@ -214,6 +216,9 @@ namespace ofxZeroMQ {
             rebuild(ofxZeroMQ::detail::calc_size<types ...>());
             return set_impl(0ul, vs ...);
         }
+        
+#pragma mark - copy value from target
+        
         template <typename type>
         std::size_t copyTo(type *v, std::size_t value_size, std::size_t offset = 0) const
         {
@@ -322,7 +327,7 @@ namespace ofxZeroMQ {
     };
 };
 
-#pragma mark type traits
+#pragma mark - type traits
 namespace ofxZeroMQ {
     namespace detail {
         template <typename type>
@@ -336,7 +341,7 @@ namespace ofxZeroMQ {
     };
 };
 
-#pragma mark fundamental convert functions
+#pragma mark - fundamental convert functions
 
 namespace ofxZeroMQ {
     namespace detail {
@@ -421,7 +426,7 @@ namespace ofxZeroMQ {
 
 #include "detail/ofxZeroMQConvertFunctions.h"
 
-#pragma mark to/from_zmq_message
+#pragma mark - to/from_zmq_message
 
 namespace ofxZeroMQ {
     namespace detail {
@@ -454,7 +459,7 @@ namespace ofxZeroMQ {
     };
 };
 
-#pragma mark adl converter
+#pragma mark - adl converter
 
 namespace ofxZeroMQ {
     template <typename type, typename sfinae>
@@ -477,7 +482,7 @@ namespace ofxZeroMQ {
     };
 };
 
-#pragma mark Message definition
+#pragma mark - Message definition
 
 namespace ofxZeroMQ {
     template <typename type>
@@ -489,7 +494,7 @@ namespace ofxZeroMQ {
     { adl_converter<type>::from_zmq_message(*this, v); };
 };
 
-#pragma mark MultipartMessage
+#pragma mark - MultipartMessage
 
 namespace ofxZeroMQ {
     struct MultipartMessage : zmq::multipart_t {
@@ -638,7 +643,7 @@ namespace ofxZeroMQ {
     };
 };
 
-#pragma mark Socket and other implementations
+#pragma mark - Socket and other implementations
 
 namespace ofxZeroMQ {
     struct Socket {
@@ -840,6 +845,7 @@ namespace ofxZeroMQ {
         }
     };
     
+#pragma mark -
     struct Publisher : Socket {
         Publisher()
         : Socket(ZMQ_PUB)
@@ -856,6 +862,7 @@ namespace ofxZeroMQ {
         using Socket::sendMultipart;
     };
     
+#pragma mark -
     struct Subscriber : Socket {
         Subscriber()
         : Socket(ZMQ_SUB)
@@ -894,6 +901,7 @@ namespace ofxZeroMQ {
         std::set<std::string> filters;
     };
     
+#pragma mark -
     struct Request : Socket {
         Request()
         : Socket(ZMQ_REQ)
@@ -913,6 +921,7 @@ namespace ofxZeroMQ {
         using Socket::getNextMessages;
     };
     
+#pragma mark -
     struct Reply : Socket {
         Reply()
         : Socket(ZMQ_REP)
@@ -932,6 +941,7 @@ namespace ofxZeroMQ {
         using Socket::getNextMessages;
     };
     
+#pragma mark -
     struct Push : Socket {
         Push()
         : Socket(ZMQ_PUSH)
@@ -954,6 +964,7 @@ namespace ofxZeroMQ {
         using Socket::getNextMessages;
     };
     
+#pragma mark -
     struct Pull : Socket {
         Pull()
         : Socket(ZMQ_PULL)
@@ -976,6 +987,7 @@ namespace ofxZeroMQ {
         using Socket::getNextMessages;
     };
 
+#pragma mark -
     struct Pair : Socket {
         Pair()
         : Socket(ZMQ_PAIR)
@@ -998,6 +1010,7 @@ namespace ofxZeroMQ {
         using Socket::getNextMessages;
     };
     
+#pragma mark -
     struct Router : Socket {
         Router()
         : Socket(ZMQ_ROUTER)
@@ -1012,6 +1025,7 @@ namespace ofxZeroMQ {
         using Socket::hasWaitingMessage;
     };
     
+#pragma mark -
     struct Dealer : Socket {
         Dealer()
         : Socket(ZMQ_DEALER)
@@ -1026,6 +1040,7 @@ namespace ofxZeroMQ {
         using Socket::hasWaitingMessage;
     };
     
+#pragma mark -
     struct XPublisher : Socket {
         XPublisher()
         : Socket(ZMQ_XPUB)
@@ -1038,6 +1053,7 @@ namespace ofxZeroMQ {
         using Socket::sendMultipart;
     };
     
+#pragma mark -
     struct XSubscriber : Socket {
         XSubscriber()
         : Socket(ZMQ_XSUB)
@@ -1054,6 +1070,7 @@ namespace ofxZeroMQ {
         using Socket::getNextMessages;
     };
     
+#pragma mark -
     struct Broker {
         Broker() {};
         ~Broker() {
@@ -1093,6 +1110,7 @@ namespace ofxZeroMQ {
         std::atomic_bool is_finish;
     };
 
+#pragma mark -
     struct XPubSubProxy {
         XPubSubProxy()
         {};
