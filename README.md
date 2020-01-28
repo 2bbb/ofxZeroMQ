@@ -4,7 +4,8 @@ ofxZMQ alternavtive.
 
 ## Notice
 
-* this addon is buggy phase now
+* **this addon is still buggy phase!**
+  * API will be change frequently.
   * if you find a bug, please post issue.
 * tested on
   *  macOS 10.14.6 + Xcode11.2 + oF0.11.0 release
@@ -37,6 +38,12 @@ ofxZMQ alternavtive.
 ### cppzmq
 
 * [MIT](https://github.com/zeromq/cppzmq/blob/v4.6.0/LICENSE)
+
+## Update history
+
+### 2020/01/28 ver 0.0.0_alpha
+
+* initial buggy version
 
 ## License for this addon
 
