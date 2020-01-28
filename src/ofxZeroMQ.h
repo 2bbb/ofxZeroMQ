@@ -172,9 +172,9 @@ namespace ofxZeroMQ {
         { from(std::forward<type>(v)); };
         
         template <typename type>
-        std::size_t copyFrom(type *v, std::size_t value_size, std::size_t offset = 0) {
+        std::size_t copyFrom(const type *v, std::size_t value_size, std::size_t offset = 0) {
             if(size() < offset + value_size) {
-                ofLogWarning("ofxZeroMQMessage::copy") << "range out of bounds. given value_size = " << value_size << ", offset = " << offset << ". but size is " << size();
+                ofLogWarning("ofxZeroMQMessage::copyFrom") << "range out of bounds. given value_size = " << value_size << ", offset = " << offset << ". but size is " << size();
                 return 0ul;
             }
             std::memcpy((char *)data() + offset, v, value_size);
@@ -187,7 +187,7 @@ namespace ofxZeroMQ {
         {
             constexpr std::size_t value_size = sizeof(type);
             if(size() < offset + value_size) {
-                ofLogWarning("ofxZeroMQMessage::copy") << "range out of bounds. given value_size = " << value_size << ", offset = " << offset << ". but size is " << size();
+                ofLogWarning("ofxZeroMQMessage::copyFrom") << "range out of bounds. given value_size = " << value_size << ", offset = " << offset << ". but size is " << size();
                 return 0ul;
             }
             std::memcpy((char *)data() + offset, &v, value_size);
@@ -200,40 +200,62 @@ namespace ofxZeroMQ {
         {
             constexpr std::size_t value_size = sizeof(type);
             if(size() < offset + value_size * array_size) {
-                ofLogWarning("ofxZeroMQMessage::copy") << "range out of bounds.  given value_size = " << value_size << ", offset = " << offset << ", array_size = " << array_size << ". but size is " << size();
+                ofLogWarning("ofxZeroMQMessage::copyFrom") << "range out of bounds.  given value_size = " << value_size << ", offset = " << offset << ", array_size = " << array_size << ". but size is " << size();
                 return 0ul;
             }
             std::memcpy((char *)data() + offset, v, value_size * array_size);
             return value_size * array_size;
         }
         
-///!  TODO
-//        template <typename type, std::size_t array_size>
-//        auto copyFrom(const type (&v)[array_size], std::size_t offset = 0)
-//            -> enable_if_t<std::is_not_standard_layout<type>::value, std::size_t>
-//        {
-//            constexpr std::size_t value_size = sizeof(type);
-//            if(size() < offset + value_size * array_size) {
-//                ofLogWarning("ofxZeroMQMessage::copy") << "range out of bounds.  given value_size = " << value_size << ", offset = " << offset << ", array_size = " << array_size << ". but size is " << size();
-//                return 0ul;
-//            }
-//            std::memcpy((char *)data() + offset, v, value_size * array_size);
-//            return value_size * array_size;
-//        }
-
         template <typename ... types>
         inline auto set(const types & ... vs)
-            -> enable_if_t<conjunction<std::is_standard_layout<types> ...>::value>
+            -> enable_if_t<conjunction<std::is_standard_layout<types> ...>::value, std::size_t>
         {
             rebuild(ofxZeroMQ::detail::calc_size<types ...>());
-            set_impl(0ul, vs ...);
+            return set_impl(0ul, vs ...);
+        }
+        template <typename type>
+        std::size_t copyTo(type *v, std::size_t value_size, std::size_t offset = 0) const
+        {
+            if(size() < offset + value_size) {
+                ofLogWarning("ofxZeroMQMessage::copyTo") << "range out of bounds. given value_size = " << value_size << ", offset = " << offset << ". but size is " << size();
+                return 0ul;
+            }
+            std::memcpy(v, (char *)data() + offset, value_size);
+            return value_size;
+        }
+        
+        template <typename type>
+        auto copyTo(type &v, std::size_t offset = 0) const
+            -> enable_if_t<std::is_standard_layout<type>::value, std::size_t>
+        {
+            constexpr std::size_t value_size = sizeof(type);
+            if(size() < offset + value_size) {
+                ofLogWarning("ofxZeroMQMessage::copyTo") << "range out of bounds. given value_size = " << value_size << ", offset = " << offset << ". but size is " << size();
+                return 0ul;
+            }
+            std::memcpy(&v, (char *)data() + offset, value_size);
+            return value_size;
+        }
+
+        template <typename type, std::size_t array_size>
+        auto copyTo(type (&v)[array_size], std::size_t offset = 0) const
+            -> enable_if_t<std::is_standard_layout<type>::value, std::size_t>
+        {
+            constexpr std::size_t value_size = sizeof(type);
+            if(size() < offset + value_size * array_size) {
+                ofLogWarning("ofxZeroMQMessage::copyTo") << "range out of bounds.  given value_size = " << value_size << ", offset = " << offset << ", array_size = " << array_size << ". but size is " << size();
+                return 0ul;
+            }
+            std::memcpy(v, (char *)data() + offset, value_size * array_size);
+            return value_size * array_size;
         }
         
         template <typename ... types>
         inline auto setTo(types & ... vs) const
-            -> enable_if_t<conjunction<std::is_standard_layout<types> ...>::value>
+            -> enable_if_t<conjunction<std::is_standard_layout<types> ...>::value, std::size_t>
         {
-            set_to_impl(0ul, vs ...);
+            return set_to_impl(0ul, vs ...);
         }
 
         // definition is below
@@ -279,24 +301,24 @@ namespace ofxZeroMQ {
             }
         }
         
-//        template <typename type>
-//        inline auto set_to_impl(std::size_t cursor, type &v) const
-//            -> enable_if_t<conjunction<std::is_standard_layout<type>>::value, std::size_t>
-//        {
-//            return copyFrom(v, cursor);
-//        }
-//
-//        template <typename type, typename ... types>
-//        inline auto set_to_impl(std::size_t cursor, type &v, types & ... vs) const
-//            -> enable_if_t<conjunction<std::is_standard_layout<type>, std::is_standard_layout<types> ...>::value, std::size_t>
-//        {
-//            auto s = copy(v, cursor);
-//            if(0ul < s) {
-//                return s + set_impl(cursor + s, vs ...);
-//            } else {
-//                return s;
-//            }
-//        }
+        template <typename type>
+        inline auto set_to_impl(std::size_t cursor, type &v) const
+            -> enable_if_t<conjunction<std::is_standard_layout<type>>::value, std::size_t>
+        {
+            return copyTo(v, cursor);
+        }
+
+        template <typename type, typename ... types>
+        inline auto set_to_impl(std::size_t cursor, type &v, types & ... vs) const
+            -> enable_if_t<conjunction<std::is_standard_layout<type>, std::is_standard_layout<types> ...>::value, std::size_t>
+        {
+            auto s = copyTo(v, cursor);
+            if(0ul < s) {
+                return s + set_to_impl(cursor + s, vs ...);
+            } else {
+                return s;
+            }
+        }
     };
 };
 
