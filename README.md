@@ -10,6 +10,12 @@ ofxZMQ alternavtive.
 * tested on
   *  macOS 10.14.6 + Xcode11.2 + oF0.11.0 release
 
+## Features
+
+* support zmq multipart message
+* support auto reconnect
+* static polymorphic get value / set value
+
 ## API
 
 ### ofxZeroMQMessage
