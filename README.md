@@ -1,6 +1,6 @@
 # ofxZeroMQ
 
-ofxZMQ alternavtive.
+[ofxZmq](https://github.com/satoruhiga/ofxZmq) alternavtive.
 
 ## Notice
 
@@ -14,6 +14,7 @@ ofxZMQ alternavtive.
 
 ## Features
 
+* basically, [satoruhiga/ofxZmq](https://github.com/satoruhiga/ofxZmq) compatible
 * support zmq multipart message
 * support auto reconnect
 * static polymorphic get value / set value
