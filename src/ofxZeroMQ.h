@@ -734,7 +734,10 @@ namespace ofxZeroMQ {
                                zmq::send_flags(SendFlag{nonblocking, more}));
         }
         
-        template <typename type>
+        template <
+            typename type,
+            typename = typename std::enable_if<!std::is_pointer<type>::value>::type
+        >
         zmq::send_result_t send(const type &data,
                                 bool nonblocking = true,
                                 bool more = false)
