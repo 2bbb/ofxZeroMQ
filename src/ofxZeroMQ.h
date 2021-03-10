@@ -269,8 +269,10 @@ namespace ofxZeroMQ {
         void from(type &&v);
         
         template <typename type>
-        inline Message &operator=(type &&v)
-        { from(std::forward<type>(v)); };
+        inline Message &operator=(type &&v) {
+            from(std::forward<type>(v));
+            return *this;
+        };
         
         // definition is below
         template <typename type>
@@ -383,7 +385,7 @@ namespace ofxZeroMQ {
 
         inline static void from_zmq_message(const ofxZeroMQ::Message &m,
                                             std::string &data)
-        { data = (char *)m.data(); };
+        { data = std::string{(char *)m.data(), m.size()}; };
         
 #pragma mark standard layout type
         template <typename type>
@@ -824,7 +826,7 @@ namespace ofxZeroMQ {
         // return true if has more flag
         template <typename data_type>
         bool getNextMessage(data_type &data) {
-            if(item.revents & ZMQ_POLLIN) return receive(data);
+            if(item.revents & ZMQ_POLLIN) return receive(data).second;
             return false;
         }
         
