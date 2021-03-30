@@ -656,10 +656,12 @@ namespace ofxZeroMQ {
 
 namespace ofxZeroMQ {
     struct Socket {
-        virtual ~Socket() {
-            socket.close();
-        };
+        virtual ~Socket()
+        { close(); };
         
+        void close()
+        { socket.close(); };
+
         void setIdentity(const std::string &data)
         { socket.setsockopt(ZMQ_IDENTITY, data.data(), data.size()); };
 
