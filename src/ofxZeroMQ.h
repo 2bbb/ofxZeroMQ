@@ -543,19 +543,20 @@ namespace ofxZeroMQ {
             const MultipartMessage *message;
             std::size_t index;
         };
-
-        template <typename ... types>
-        MultipartMessage(types && ... data)
-        { addArguments(std::forward<types>(data) ...); };
+        MultipartMessage() {}
+        
+        template <typename type, typename ... types>
+        MultipartMessage(type &&datum, types && ... data)
+        { addArguments(std::forward<type>(datum), std::forward<types>(data) ...); };
         
         template <typename type>
         void addArgument(type &&data) {
             add(std::move(Message{std::forward<type>(data)}));
         };
         
-        template <typename ... types>
-        void addArguments(types && ... data) {
-            Message messages[] = { convert(std::forward<types>(data)) ... };
+        template <typename type, typename ... types>
+        void addArguments(type &&datum, types && ... data) {
+            Message messages[] = { convert(datum), convert(std::forward<types>(data)) ... };
             for(auto &&m : messages) add(std::move(m));
         }
         
