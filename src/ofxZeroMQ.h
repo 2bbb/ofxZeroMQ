@@ -158,6 +158,8 @@ namespace ofxZeroMQ {
     struct Message : zmq::message_t {
         using zmq::message_t::message_t;
         
+        Message() = default;
+        
         inline Message(const zmq::message_t &mom) {
             rebuild(mom.size());
             std::memcpy(data(), mom.data(), mom.size());
