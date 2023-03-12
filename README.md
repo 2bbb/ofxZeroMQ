@@ -10,7 +10,7 @@
 * tested on
   *  macOS 10.14.6 + Xcode11.2 + oF0.11.0 release
   *  **NOT** developed/tested on windows. maybe it can't be build.
-     *  need to fill `libs/zeromq/include/platform.hpp` for windows env.
+     *  need to fill `libs/zeromq/src/platform.hpp` for windows env.
 
 ## Features
 
