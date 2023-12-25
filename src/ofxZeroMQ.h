@@ -621,7 +621,7 @@ namespace ofxZeroMQ {
                              std::size_t to,
                              type &data) const
         {
-            if(to == n) return;
+            if(to == n) return false;
             if(n < size()) {
                 adl_converter<type>::from_zmq_message(at(n), data);
                 return true;
