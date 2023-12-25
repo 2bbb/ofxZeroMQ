@@ -831,7 +831,7 @@ namespace ofxZeroMQ {
         // return true if has more flag
         template <typename data_type>
         bool getNextMessage(data_type &data) {
-            if(item.revents & ZMQ_POLLIN) return receive(data).second;
+            if(item.revents & ZMQ_POLLIN) return receive(data);
             return false;
         }
         
