@@ -826,7 +826,7 @@ namespace ofxZeroMQ {
         }
 
         bool hasWaitingMessage(long timeout_millis = 0)
-        { return 0 < zmq::poll(&item, 1, timeout_millis * 1000); }
+        { return 0 < zmq::poll(&item, 1, timeout_millis); }
         
         // return true if has more flag
         template <typename data_type>
